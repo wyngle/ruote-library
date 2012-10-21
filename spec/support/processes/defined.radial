@@ -1,0 +1,10 @@
+define defined
+  alpha
+  bravo
+  subprocess ref: abc
+
+  define abc
+    sequence
+      abc_alpha
+      abc_bravo
+      abc_charlie

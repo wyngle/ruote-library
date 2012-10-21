@@ -12,4 +12,9 @@ Gem::Specification.new do |gem|
   gem.name          = "ruote-library"
   gem.require_paths = ["lib"]
   gem.version       = "1.0.0"
+
+  gem.add_dependency 'ruote', ['~> 2.3']
+
+  gem.add_development_dependency 'rspec'
+  gem.add_development_dependency 'mocha'
 end

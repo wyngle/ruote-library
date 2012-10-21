@@ -1,0 +1,4 @@
+define country/attack
+  iterator on_val: 'army, navy, airforce', to_var: 'type'
+    subprocess army/build, type: '${v:type}'
+    subprocess army/attack, type: '${v:type}'

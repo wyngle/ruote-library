@@ -1,0 +1,3 @@
+define army/build
+  recruit_troops
+  train_troops
