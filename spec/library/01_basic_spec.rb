@@ -103,4 +103,19 @@ describe Ruote::ProcessLibrary do
       )
     end
   end
+
+  describe :inclusion do
+    it "includes other processes" do
+      pdef = @library.fetch("inclusive/test")
+      pdef.should == "define inclusive/test
+  foo
+  bar
+  cursor
+    recruit_troops
+    train_troops
+    rewind unless: \"${f:enough_troops}\"
+    build_phalanx_formation
+    send_formation direction: forward\n"
+    end
+  end
 end

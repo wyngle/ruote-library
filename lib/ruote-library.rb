@@ -51,16 +51,52 @@ module Ruote
     #       be_funny
     #
     # In other words: fetch() loads any referenced subprocess that are not
-    # defined in the original definition. (Notice the missing single-quotes?)
+    # defined in the original definition.
+    #
+    # === Including referenced
+    #
+    # Image you have thses files:
+    #   > cat base.radial
+    #   define base
+    #     alpha
+    #     bravo
+    #     charly
+    #
+    #   > cat extended.radial
+    #   define extended
+    #     taste_soup
+    #       concurrence
+    #          lib_include base
+    #
+    # When you fetch extended, you will receive
+    #
+    #   define extended
+    #      taste_soup
+    #      concurrence
+    #        alpha
+    #        bravo
+    #        charly
+    #
+    # === Notice the missing single-quotes?
+    # Because the ProcessLibrary turns all files into Radial (even though it
+    # already is a Radial) it performs some optimizing
     #
     # === Caveat
     # In order for this to work you must:
     #
     # * Name your files like your (sub)processes, including path from @root
-    # * Use the 'subprocess' expression 
+    #
+    # * Use the 'subprocess' expression
     #   (see: http://ruote.rubyforge.org/exp/subprocess.html)
     #   otherwise the library will not be able to tell the diference between a
     #   participant and a subprocess
+    #
+    # * You cannot have a participant called 'lib_include' if you want to use
+    #   the inclusion mechanism
+    #
+    # === Note on inclusion
+    # 'lib_include' was added as a way to keep the definitions tree simple, it
+    # has no other sane use-case
     #
     # @param [String] name The name of the file to fetch
     # @return [String] radial process definition (regardless of what was in
@@ -93,13 +129,21 @@ module Ruote
         end
       end
 
+      if radial =~ /lib_include/
+        extras = radial.scan(/^(\s+)lib_include (.+)$/).map do |indent, process|
+          sub_process = fetch(process, (indent.length / 2) - 1)
+          replacement = sub_process.split("\n")[1..-1].join("\n")
+          radial.gsub!("#{indent}lib_include #{process}", replacement)
+        end
+      end
+
       return radial
     end
 
     # Read a process definition from file
     #
     # @param [String] name The name of the process - should be the filename,
-    #   the extension is optional and tried in the order .radial, .json and 
+    #   the extension is optional and tried in the order .radial, .json and
     #   finaly .xml
     #
     # @return [String] The contents of the first found file

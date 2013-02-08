@@ -1,0 +1,7 @@
+define inclusive/test
+  foo
+  bar
+  cursor
+    lib_include 'army/build'
+    rewind unless: '${f:enough_troops}'
+    lib_include army/attack
